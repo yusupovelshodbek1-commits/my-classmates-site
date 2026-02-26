@@ -72,9 +72,7 @@
 <body>
 
 <!-- Top menu -->
-<div id="topMenu">
-  <!-- Buttons will be added dynamically -->
-</div>
+<div id="topMenu"></div>
 
 <!-- Classmates list -->
 <div class="classmates-container" id="classmatesContainer"></div>
@@ -85,7 +83,7 @@
 
   const topMenu = document.getElementById("topMenu");
 
-  // Add buttons for the logged-in user
+  // Add buttons for logged-in user
   const profileBtn = document.createElement("button");
   profileBtn.textContent = "My Profile";
   profileBtn.onclick = () => window.location.href = `cabinet.html?user=${loggedUser}`;
@@ -134,7 +132,10 @@
 
   const container = document.getElementById("classmatesContainer");
 
+  // Show all classmates EXCEPT logged-in user
   for (const username in classmates) {
+    if (username === loggedUser) continue; // <-- skip logged-in user
+
     const div = document.createElement("div");
     div.className = "classmate";
     div.innerHTML = `
