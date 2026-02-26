@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Group Chat</title>
+<style>
+body {
+  margin:0;
+  height:100vh;
+  display:flex;
+  justify-content:center;
+  align-items:center;
+  background:url("background.jpg") no-repeat center/cover;
+  font-family:Arial;
+  color:white;
+}
+
+.chat-box {
+  width:600px;
+  height:600px;
+  display:flex;
+  flex-direction:column;
+  background:rgba(255,255,255,0.15);
+  backdrop-filter:blur(15px);
+  border-radius:20px;
+  padding:20px;
+}
+
+.header {
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  margin-bottom:10px;
+}
+
+#messages {
+  flex:1;
+  overflow-y:auto;
+  margin-bottom:10px;
+  background:rgba(255,255,255,0.05);
+  padding:10px;
+  border-radius:10px;
+}
+
+.message {
+  margin-bottom:8px;
+}
+
+.username {
+  font-weight:bold;
+  cursor:pointer;
+}
+
+.controls {
+  margin-bottom:10px;
+}
+
+input {
+  flex:1;
+  padding:10px;
+  border-radius:10px;
+  border:none;
+  outline:none;
+}
+
+button {
+  padding:8px 12px;
+  border:none;
+  border-radius:10px;
+  cursor:pointer;
+}
+</style>
+</head>
+<body>
+
+<div class="chat-box">
+
+  <div class="header">
+    <h2>Group Chat</h2>
+    <button onclick="goBack()">Back</button>
+  </div>
+
+  <div class="controls" id="ownerControls"></div>
+  <div id="messages"></div>
+
+  <div style="display:flex;gap:10px;">
+    <input id="msgInput" placeholder="Type message...">
+    <button onclick="sendMessage()">Send</button>
+  </div>
+
+</div>
+
+<script>
+const loggedUser = localStorage.getItem("loggedUser");
+if(!loggedUser) window.location.href="login.html";
+
+const nickname = localStorage.getItem("nickname_" + loggedUser);
+const isOwner = loggedUser==="yusupov.elshodbek";
+
+if(isOwner){
+  document.getElementById("ownerControls").innerHTML = `<button onclick="clearChat()">Clear Chat</button>`;
+}
+
+async function loadMessages(){
+  const res = await fetch("/api/messages");
+  const data = await res.json();
+
+  const box = document.getElementById("messages");
+  box.innerHTML="";
+
+  data.forEach(m=>{
+    const div = document.createElement("div");
+    div.className="message";
+    const name = m.nickname ? m.nickname : m.user;
+    div.innerHTML = `<span class="username" onclick="viewProfile('${m.user}')">${name}</span>: ${m.text}`;
+    if(isOwner && m.user!==loggedUser){
+      div.innerHTML += `<button onclick="muteUser('${m.user}')">Mute</button>
+                        <button onclick="unmuteUser('${m.user}')">Unmute</button>`;
+    }
+    box.appendChild(div);
+  });
+
+  box.scrollTop = box.scrollHeight;
+}
+
+async function sendMessage(){
+  const input = document.getElementById("msgInput");
+  const text = input.value.trim();
+  if(!text) return;
+
+  const res = await fetch("/api/messages",{
+    method:"POST",
+    headers:{"Content-Type":"application/json"},
+    body:JSON.stringify({user:loggedUser,text:text,nickname:nickname})
+  });
+
+  if(res.status===403){ alert("You are muted!"); return; }
+
+  input.value="";
+  loadMessages();
+}
+
+async function clearChat(){
+  const res = await fetch("/api/clear",{
+    method:"POST",
+    headers:{"Content-Type":"application/json"},
+    body:JSON.stringify({owner:"yusupov.elshodbek"})
+  });
+  const data = await res.json();
+  if(data.success) loadMessages();
+  else alert(data.error);
+}
+
+async function muteUser(target){
+  await fetch("/api/mute",{method:"POST", headers:{"Content-Type":"application/json"}, body:JSON.stringify({owner:"yusupov.elshodbek", target})});
+}
+
+async function unmuteUser(target){
+  await fetch("/api/unmute",{method:"POST", headers:{"Content-Type":"application/json"}, body:JSON.stringify({owner:"yusupov.elshodbek", target})});
+}
+
+function viewProfile(user){
+  localStorage.setItem("viewUser", user);
+  window.location.href="cabinet.html?user="+user;
+}
+
+function goBack(){ window.location.href="cabinet.html"; }
+
+setInterval(loadMessages,2000);
+loadMessages();
+</script>
+
+</body>
+</html>

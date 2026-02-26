@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Login - My Classmates</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box;font-family:Arial;}
+body{height:100vh;display:flex;justify-content:center;align-items:center;background:url("background.jpg") no-repeat center/cover;color:white;}
+.login-card{width:350px;padding:40px;border-radius:20px;background:rgba(255,255,255,0.15);backdrop-filter:blur(15px);box-shadow:0 8px 32px rgba(0,0,0,0.3);text-align:center;}
+.login-card h2{margin-bottom:25px;font-size:26px;}
+.input-group{margin-bottom:20px;}
+input{width:100%;padding:12px;border-radius:12px;border:none;outline:none;background:rgba(255,255,255,0.25);color:white;font-size:14px;}
+input::placeholder{color:rgba(255,255,255,0.7);}
+button{width:100%;padding:12px;border-radius:12px;border:none;background:rgba(255,255,255,0.3);color:white;font-weight:bold;cursor:pointer;transition:0.3s;}
+button:hover{background:rgba(255,255,255,0.5);transform:scale(1.05);}
+</style>
+</head>
+<body>
+
+<div class="login-card">
+  <h2>My Classmates</h2>
+  <div class="input-group">
+    <input id="username" placeholder="Username (e.g. yusupov.elshodbek)">
+  </div>
+  <div class="input-group">
+    <input id="password" type="password" placeholder="Password (FirstName + 6)">
+  </div>
+  <button onclick="login()">Login</button>
+</div>
+
+<script>
+const classmates = [
+"Akramov Akmal","Choriyev Miraziz","Kuldashev Javohir","Ziyomitdinov Elshod",
+"Nishonov Shoxrux","Ravshanov Bexruz","Furqatov Ulug'bek","Jorayev Isomiddin",
+"Ismatullayev Xurshid","Ashurov Akmal","Ilhomov Muhammadsiddiq","Radjabova Madinabonu",
+"Bakirova Shabnam","Muhammadov Baxtinur","Abduvohidov Abdurahmon","Mirzaraximov Mirmag'rur",
+"Doniyorova Dilnoza","Anarkulova Amira","Karimjonova Madina","Baratov Jaloliddin",
+"Ergashaliyev Diyor","Miraxmedov Dilnur","Yusupov Elshodbek","Madraximov Sardor"
+];
+
+function login(){
+  const username = document.getElementById("username").value.trim().toLowerCase();
+  const password = document.getElementById("password").value.trim();
+
+  const match = classmates.find(name=>{
+    const [last, first] = name.split(" ");
+    return username === `${last.toLowerCase()}.${first.toLowerCase()}` && password === `${first}6`;
+  });
+
+  if(match){
+    localStorage.setItem("loggedUser", username);
+    if(!localStorage.getItem("nickname_" + username)){
+      localStorage.setItem("nickname_" + username,"");
+    }
+    window.location.href="cabinet.html";
+  }else{
+    alert("Wrong username or password!");
+  }
+}
+</script>
+
+</body>
+</html>

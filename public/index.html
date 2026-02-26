@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>My Classmates</title>
+<style>
+  body {
+    margin: 0;
+    font-family: Arial, sans-serif;
+    background: url("background.jpg") no-repeat center/cover;
+    color: white;
+  }
+
+  /* Top menu with buttons */
+  #topMenu {
+    display: flex;
+    justify-content: flex-end;
+    padding: 15px 30px;
+    gap: 10px;
+  }
+
+  #topMenu button {
+    padding: 8px 14px;
+    border: none;
+    border-radius: 10px;
+    cursor: pointer;
+    background: rgba(255 255 255 / 0.3);
+    color: white;
+    font-weight: bold;
+    transition: background 0.3s ease;
+  }
+
+  #topMenu button:hover {
+    background: rgba(255 255 255 / 0.5);
+  }
+
+  /* Classmates list area */
+  .classmates-container {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 20px;
+    padding: 20px;
+  }
+
+  .classmate {
+    width: 180px;
+    background: rgba(255 255 255 / 0.15);
+    backdrop-filter: blur(10px);
+    border-radius: 15px;
+    padding: 15px;
+    text-align: center;
+    cursor: pointer;
+    transition: transform 0.2s ease;
+  }
+
+  .classmate:hover {
+    transform: scale(1.05);
+  }
+
+  .classmate img {
+    width: 100px;
+    height: 100px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 2px solid white;
+    margin-bottom: 10px;
+  }
+</style>
+</head>
+<body>
+
+<!-- Top menu -->
+<div id="topMenu">
+  <!-- Buttons will be added dynamically -->
+</div>
+
+<!-- Classmates list -->
+<div class="classmates-container" id="classmatesContainer"></div>
+
+<script>
+  const loggedUser = localStorage.getItem("loggedUser");
+  if (!loggedUser) window.location.href = "login.html";
+
+  const topMenu = document.getElementById("topMenu");
+
+  // Add buttons for the logged-in user
+  const profileBtn = document.createElement("button");
+  profileBtn.textContent = "My Profile";
+  profileBtn.onclick = () => window.location.href = `cabinet.html?user=${loggedUser}`;
+  topMenu.appendChild(profileBtn);
+
+  const chatBtn = document.createElement("button");
+  chatBtn.textContent = "Chat";
+  chatBtn.onclick = () => window.location.href = "chat.html";
+  topMenu.appendChild(chatBtn);
+
+  const logoutBtn = document.createElement("button");
+  logoutBtn.textContent = "Log Out";
+  logoutBtn.onclick = () => {
+    localStorage.removeItem("loggedUser");
+    window.location.href = "login.html";
+  };
+  topMenu.appendChild(logoutBtn);
+
+  // Sample classmates list
+  const classmates = {
+    "akramov.akmal":"Akramov Akmal",
+    "choriyev.miraziz":"Choriyev Miraziz",
+    "kuldashev.javohir":"Kuldashev Javohir",
+    "ziyomitdinov.elshod":"Ziyomitdinov Elshod",
+    "nishonov.shoxrux":"Nishonov Shoxrux",
+    "ravshanov.bexruz":"Ravshanov Bexruz",
+    "furqatov.ulugbek":"Furqatov Ulug'bek",
+    "jorayev.isomiddin":"Jorayev Isomiddin",
+    "ismatullayev.xurshid":"Ismatullayev Xurshid",
+    "ashurov.akmal":"Ashurov Akmal",
+    "ilhomov.muhammadsiddiq":"Ilhomov Muhammadsiddiq",
+    "radjabova.madinabonu":"Radjabova Madinabonu",
+    "bakirova.shabnam":"Bakirova Shabnam",
+    "muhammadov.baxtinur":"Muhammadov Baxtinur",
+    "abduvohidov.abdurahmon":"Abduvohidov Abdurahmon",
+    "mirzaraximov.mirmag'rur":"Mirzaraximov Mirmag'rur",
+    "doniyorova.dilnoza":"Doniyorova Dilnoza",
+    "anarkulova.amira":"Anarkulova Amira",
+    "karimjonova.madina":"Karimjonova Madina",
+    "baratov.jaloliddin":"Baratov Jaloliddin",
+    "ergashaliyev.diyor":"Ergashaliyev Diyor",
+    "miraxmedov.dilnur":"Miraxmedov Dilnur",
+    "yusupov.elshodbek":"Yusupov Elshodbek",
+    "madraximov.sardor":"Madraximov Sardor"
+  };
+
+  const container = document.getElementById("classmatesContainer");
+
+  for (const username in classmates) {
+    const div = document.createElement("div");
+    div.className = "classmate";
+    div.innerHTML = `
+      <img src="${localStorage.getItem("photo_" + username) || "guest.png"}" alt="Profile Photo">
+      <p>${classmates[username]}</p>
+    `;
+    div.onclick = () => {
+      window.location.href = `cabinet.html?user=${username}`;
+    };
+    container.appendChild(div);
+  }
+</script>
+
+</body>
+</html>

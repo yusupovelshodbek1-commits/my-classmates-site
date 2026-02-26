@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Cabinet</title>
+<style>
+body{margin:0;font-family:Arial;background:url("background.jpg") no-repeat center/cover;color:white;display:flex;justify-content:center;align-items:flex-start;min-height:100vh;padding:30px 0;}
+.container{width:800px;background:rgba(255 255 255 / 0.15);backdrop-filter:blur(15px);border-radius:20px;padding:20px;box-sizing:border-box;}
+#cabinetButtons{display:flex;gap:10px;margin-bottom:15px;}
+button{padding:8px 14px;border:none;border-radius:10px;cursor:pointer;background:rgba(255 255 255 / 0.3);color:white;font-weight:bold;transition:background 0.3s ease;}
+button:hover{background:rgba(255 255 255 / 0.5);}
+.profile-info{display:flex;gap:20px;align-items:center;}
+.profile-photo{width:150px;height:150px;border-radius:50%;object-fit:cover;border:3px solid white;background:#ccc;}
+.profile-details{flex:1;}
+.profile-details h2{margin:0 0 10px;font-size:28px;}
+.profile-details p{margin:5px 0;font-size:18px;}
+</style>
+</head>
+<body>
+
+<div class="container">
+<div id="cabinetButtons"></div>
+<div class="profile-info">
+<img id="profilePhoto" class="profile-photo" src="guest.png" alt="Profile Photo" />
+<div class="profile-details">
+<h2 id="profileName"></h2>
+<p id="profileNickname"></p>
+<p id="profileUsername" style="font-style: italic; color: #ccc;"></p>
+</div>
+</div>
+</div>
+
+<script>
+const loggedUser = localStorage.getItem("loggedUser");
+if(!loggedUser) window.location.href="login.html";
+
+const urlParams = new URLSearchParams(window.location.search);
+let viewUser = urlParams.get("user") || localStorage.getItem("viewUser") || loggedUser;
+
+const buttonsDiv = document.getElementById("cabinetButtons");
+const profileNameEl = document.getElementById("profileName");
+const profileNicknameEl = document.getElementById("profileNickname");
+const profilePhotoEl = document.getElementById("profilePhoto");
+const profileUsernameEl = document.getElementById("profileUsername");
+
+const classmates = {
+"akramov.akmal":"Akramov Akmal","choriyev.miraziz":"Choriyev Miraziz","kuldashev.javohir":"Kuldashev Javohir",
+"ziyomitdinov.elshod":"Ziyomitdinov Elshod","nishonov.shoxrux":"Nishonov Shoxrux","ravshanov.bexruz":"Ravshanov Bexruz",
+"furqatov.ulugbek":"Furqatov Ulug'bek","jorayev.isomiddin":"Jorayev Isomiddin","ismatullayev.xurshid":"Ismatullayev Xurshid",
+"ashurov.akmal":"Ashurov Akmal","ilhomov.muhammadsiddiq":"Ilhomov Muhammadsiddiq","radjabova.madinabonu":"Radjabova Madinabonu",
+"bakirova.shabnam":"Bakirova Shabnam","muhammadov.baxtinur":"Muhammadov Baxtinur","abduvohidov.abdurahmon":"Abduvohidov Abdurahmon",
+"mirzaraximov.mirmag'rur":"Mirzaraximov Mirmag'rur","doniyorova.dilnoza":"Doniyorova Dilnoza","anarkulova.amira":"Anarkulova Amira",
+"karimjonova.madina":"Karimjonova Madina","baratov.jaloliddin":"Baratov Jaloliddin","ergashaliyev.diyor":"Ergashaliyev Diyor",
+"miraxmedov.dilnur":"Miraxmedov Dilnur","yusupov.elshodbek":"Yusupov Elshodbek","madraximov.sardor":"Madraximov Sardor"
+};
+
+if(viewUser===loggedUser){
+const classmatesBtn=document.createElement("button");classmatesBtn.textContent="My Classmates";classmatesBtn.onclick=()=>window.location.href="index.html";buttonsDiv.appendChild(classmatesBtn);
+const chatBtn=document.createElement("button");chatBtn.textContent="Chat";chatBtn.onclick=()=>window.location.href="chat.html";buttonsDiv.appendChild(chatBtn);
+const changePassBtn=document.createElement("button");changePassBtn.textContent="Change Password";changePassBtn.onclick=()=>window.location.href="change-password.html";buttonsDiv.appendChild(changePassBtn);
+const logoutBtn=document.createElement("button");logoutBtn.textContent="Log Out";logoutBtn.onclick=()=>{localStorage.removeItem("loggedUser");window.location.href="login.html";};buttonsDiv.appendChild(logoutBtn);
+}
+
+profileNameEl.textContent = classmates[viewUser]||viewUser;
+profileUsernameEl.textContent = `Username: ${viewUser}`;
+const nickname = localStorage.getItem("nickname_"+viewUser);
+profileNicknameEl.textContent = nickname ? `Nickname: ${nickname}` : "";
+const photo = localStorage.getItem("photo_"+viewUser);
+profilePhotoEl.src = photo ? photo : "guest.png";
+</script>
+
+</body>
+</html>
